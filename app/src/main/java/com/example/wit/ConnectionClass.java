@@ -31,7 +31,7 @@ public class ConnectionClass {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             System.out.println("8");
-            Connection con= DriverManager.getConnection("jdbc:mysql://localhost:3306/project", "beth", "Seasons01");
+            Connection con= DriverManager.getConnection("jdbc:mysql://192.168.1.2/project", "root", "");
             //ConnURL = "jdbc:jtds:sqlserver://" + "localhost" +";databaseName="+ db + ";user=" + user+ ";password=" + pass + ";";
             System.out.println("9");
             //Connection conn = DriverManager.getConnection(ConnURL);
