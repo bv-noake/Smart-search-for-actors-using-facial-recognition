@@ -12,4 +12,6 @@
     <color name="blue3">#19bacd</color>
     <color name= "blue4">#69c9d6</color>
     <color name="darkblue">#69a0d9</color>
+    <color name = "vdarkblue">#0009ff</color>
+
 </resources>

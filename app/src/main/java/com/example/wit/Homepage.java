@@ -4,14 +4,16 @@ package com.example.wit;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-
+import android.view.KeyEvent;
 
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -34,6 +36,7 @@ public class Homepage extends AppCompatActivity  {
     private Button login;
     private Button createaccount;
     private ProgressDialog progressDialog, loginval;
+    private SharedPreferenceConfig sharedPreferenceConfig;
 
 
     @Override
@@ -44,6 +47,8 @@ public class Homepage extends AppCompatActivity  {
 
         getSupportActionBar().hide();
 
+
+
         Email = (EditText) findViewById(R.id.email);
         Password = (EditText) findViewById(R.id.password);
         createaccount = (Button) findViewById(R.id.button3);
@@ -51,9 +56,18 @@ public class Homepage extends AppCompatActivity  {
         loginval = new ProgressDialog(this);
         login = (Button) findViewById(R.id.button2);
 
+
         progressDialog.setMessage("Please wait...");
         progressDialog.setTitle("Checking user details");
 
+
+        sharedPreferenceConfig = new SharedPreferenceConfig(getApplicationContext());
+
+        if (sharedPreferenceConfig.readloginStatus())
+        {
+            viewcamera();
+            finish();
+        }
 
 
         login.setOnClickListener(new View.OnClickListener() {
@@ -125,7 +139,7 @@ public class Homepage extends AppCompatActivity  {
                 //utils.getIPAddress(true); // IPv4
                 //utils.getIPAddress(false); // IPv6
 
-                URL url = new URL("http://10.167.124.194/App/login.php?"+data);
+                URL url = new URL("http://10.167.122.34/App/login.php?"+data);
                 URLConnection con = url.openConnection();
                 con.setDoOutput(true);
 
@@ -137,21 +151,38 @@ public class Homepage extends AppCompatActivity  {
                 }
                 final String result = s.toString();
                 System.out.println(result);
-                progressDialog.dismiss();
+
+
+
+                progressDialog.cancel();
+
+
                 runOnUiThread(new Runnable() {
                     public void run() {
                         System.out.println("1");
                         if (result.toString().equals("valid")) {
+
+                            SharedPreferences sharedPreferences = getSharedPreferences("application", Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                            editor.putString("Email", Email);
+                            editor.putString("Password", Password);
+                            editor.apply();
+
                             loginval.setMessage("Authorised, logging you in now...");
                             loginval.show();
                             Handler handler = new Handler();
                             handler.postDelayed(new Runnable() {
                                 public void run() {
-                                    loginval.dismiss();
+                                    loginval.cancel();
                                 }
-                                }, 6000);
+                                }, 9000);
 
+
+                            sharedPreferenceConfig.writeLoginStatus(true);
                             viewcamera();
+
+
+
                         }
                         if (result.toString().equals("not valid")) {
                             Toast toast = Toast.makeText(getApplicationContext(), "Incorrect Details, Please try again...", Toast.LENGTH_SHORT);
@@ -183,11 +214,42 @@ public class Homepage extends AppCompatActivity  {
     public void createaccount() {
         Intent intent = new Intent(this, createaccount.class);
         startActivity(intent);
+
     }
 
     public void viewcamera() {
         Intent intent = new Intent (this, MainActivity.class);
         startActivity(intent);
+        finish();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if ( progressDialog!=null && progressDialog.isShowing() )
+        {
+            progressDialog.cancel();
+        }
+
+
+
+    }
+
+    // 2) :
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if ( progressDialog!=null && progressDialog.isShowing())
+        {
+            progressDialog.cancel();
+        }
+        if ( loginval!=null && loginval.isShowing() )
+        {
+            loginval.cancel();
+        }
+
+
+
     }
 
 }

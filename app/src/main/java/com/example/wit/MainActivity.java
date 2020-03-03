@@ -3,30 +3,44 @@ package com.example.wit;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.MotionEvent;
 import android.view.View;
 import android.os.Bundle;
 import android.widget.ImageView;
-
+import android.preference.PreferenceManager;
 import com.chaquo.python.PyObject;
 import com.chaquo.python.Python;
 import com.chaquo.python.android.AndroidPlatform;
+import android.widget.TextView;
 
-
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.io.File;
 import android.net.Uri;
-
+import android.widget.Toast;
+import android.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 101;
     private ImageView Imageres;
+
+
+
+    private SharedPreferenceConfig sharedPreferenceConfig;
 
 
     String currentImagePath = null;
@@ -44,6 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
+        sharedPreferenceConfig = new SharedPreferenceConfig(getApplicationContext());
+        SharedPreferences sharedPreferences = getSharedPreferences("application", Context.MODE_PRIVATE);
+        String Email = sharedPreferences.getString("Email", "default");
+        String Password = sharedPreferences.getString("Password", "default");
+        MainActivity.username o = new username();
+        o.execute(Email, Password);
 
 
 
@@ -82,21 +102,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    /*
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBit = (Bitmap) extras.get("data");
-            Imageres.setImageBitmap(imageBit);
 
-
-        }
-
-    }
-
-     */
 
 
 
@@ -133,5 +139,62 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void userlogout(View view) {
 
+        sharedPreferenceConfig.writeLoginStatus(false);
+        startActivity(new Intent(this, Homepage.class));
+        finish();
+    }
+
+    public class username extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            //Toast.makeText(getBaseContext(),s,Toast.LENGTH_SHORT).show();
+        }
+
+        @SuppressLint("WrongThread")
+        @Override
+        protected String doInBackground(String... params) {
+
+            String Email = params[0];
+            String Password = params[1];
+
+            try {
+                String data = URLEncoder.encode("Email", "UTF-8") + "=" +
+                        URLEncoder.encode(Email, "UTF-8") + "&" +
+                        URLEncoder.encode("Password", "UTF-8") + "=" +
+                        URLEncoder.encode(Password, "UTF-8");
+
+                URL url = new URL("http://10.167.122.34/App/username.php?" + data);
+                URLConnection con = url.openConnection();
+                con.setDoOutput(true);
+
+                BufferedReader read = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                StringBuilder s = new StringBuilder();
+                String line = null;
+                while ((line = read.readLine()) != null) {
+                    s.append(line);
+                }
+                final String result = s.toString();
+                System.out.println(result);
+                TextView textView = (TextView) findViewById(R.id.welcometext);
+                textView.setText("Welcome back:  " + result);
+
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+
+
+
+                return null;
+        }
+    }
 }

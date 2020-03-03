@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">WIT </string>
     <string name="picture"> Click to take a picture of your actor</string>
+    <string name="login_preference"> com.example.wit_login_preference</string>
+    <string name="login_status_preference"> com.example.wit_login_status_preference </string>
     <string name = "swipeview"> Swipe to view your previous searches... </string>
     <string name="prompt_user"> Email... </string>
     <string name="prompt_pass">Password...</string>
