@@ -58,7 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
+
+
         sharedPreferenceConfig = new SharedPreferenceConfig(getApplicationContext());
+
         SharedPreferences sharedPreferences = getSharedPreferences("application", Context.MODE_PRIVATE);
         String Email = sharedPreferences.getString("Email", "default");
         String Password = sharedPreferences.getString("Password", "default");
@@ -146,6 +149,11 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+
+
+
+
+
     public class username extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
@@ -172,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                         URLEncoder.encode("Password", "UTF-8") + "=" +
                         URLEncoder.encode(Password, "UTF-8");
 
-                URL url = new URL("http://10.167.122.34/App/username.php?" + data);
+                URL url = new URL("http://10.167.122.103/App/username.php?" + data);
                 URLConnection con = url.openConnection();
                 con.setDoOutput(true);
 
@@ -182,10 +190,16 @@ public class MainActivity extends AppCompatActivity {
                 while ((line = read.readLine()) != null) {
                     s.append(line);
                 }
-                final String result = s.toString();
-                System.out.println(result);
-                TextView textView = (TextView) findViewById(R.id.welcometext);
-                textView.setText("Welcome back:  " + result);
+                runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        final String result = s.toString();
+                        System.out.println(result);
+                        TextView textView = (TextView) findViewById(R.id.welcometext);
+                        textView.setText("Welcome back:  " + result);
+                    }
+                });
 
             }
             catch (Exception e) {

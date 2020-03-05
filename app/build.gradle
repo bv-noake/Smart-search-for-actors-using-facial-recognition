@@ -30,7 +30,7 @@ android {
             pip {
 
                 install "face_recognition"
-
+                install "mysql.connector"
                 install "pymysql"
 
 

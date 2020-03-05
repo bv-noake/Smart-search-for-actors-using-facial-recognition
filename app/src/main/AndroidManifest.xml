@@ -23,7 +23,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/cameralogo"
         android:label="@string/app_name"
-
+        android:hardwareAccelerated="false"
+        android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
