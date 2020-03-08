@@ -139,7 +139,7 @@ public class Homepage extends AppCompatActivity  {
                 //utils.getIPAddress(true); // IPv4
                 //utils.getIPAddress(false); // IPv6
 
-                URL url = new URL("http://10.167.122.103/App/login.php?"+data);
+                URL url = new URL("http://192.168.43.35:80/App/login.php?"+data);
                 URLConnection con = url.openConnection();
                 con.setDoOutput(true);
 
@@ -251,5 +251,6 @@ public class Homepage extends AppCompatActivity  {
 
 
     }
+
 
 }

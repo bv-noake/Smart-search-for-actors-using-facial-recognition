@@ -121,7 +121,7 @@ public class createaccount extends AppCompatActivity {
                 //utils.getIPAddress(true); // IPv4
                 //utils.getIPAddress(false); // IPv6
 
-                URL url = new URL("http://10.167.122.103/App/register.php?"+data);
+                URL url = new URL("http://192.168.43.35:80/App/register.php?"+data);
                 URLConnection con = url.openConnection();
                 con.setDoOutput(true);
                 System.out.println("2");

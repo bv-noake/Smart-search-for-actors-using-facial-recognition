@@ -5,9 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import java.util.ArrayList;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -17,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 public class ViewSearches extends AppCompatActivity {
     Button button;
     private SharedPreferenceConfig sharedPreferenceConfig;
+    ArrayList<String> searcharray = new ArrayList<String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,18 +73,58 @@ public class ViewSearches extends AppCompatActivity {
                         URLEncoder.encode(Email, "UTF-8");
 
 
-                URL url = new URL("http://10.167.122.103/App/searches.php?" + data);
+                URL url = new URL("http://192.168.43.35:80/App/searches.php?" + data);
                 URLConnection con = url.openConnection();
                 con.setDoOutput(true);
 
                 BufferedReader read = new BufferedReader(new InputStreamReader(con.getInputStream()));
                 StringBuilder s = new StringBuilder();
-                String line = null;
-                while ((line = read.readLine()) != null) {
+                runOnUiThread(new Runnable() {
 
-                    s.append(line);
-                }
+                    @Override
+                    public void run() {
+                        String line = null;
+                        while (true) {
+                            try {
+                                if (!((line = read.readLine()) != null)) break;
+                                {
+                                    if (line.equals("not valid")) {
+
+                                        TextView textView = (TextView) findViewById(R.id.viewmsg);
+                                        textView.setText("You don't have any searches");
+                                    } else {
+                                        String[] arr = line.split(" . ");
+
+                                        for ( String ss : arr) {
+                                            System.out.println(ss);
+                                            searcharray.add(ss);
+                                        }
+                                        TextView textView = (TextView) findViewById(R.id.viewmsg);
+                                        textView.setText("You Searched for:");
+                                        for (int i = 0; i< searcharray.size(); i++) {
+                                            System.out.println(searcharray );
+
+                                        }
+
+                                    }
+                                }
+
+
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+
+                        }
+                    }
+
+                });
                 final String result = s.toString();
+                System.out.println(result);
+
+
+
+
 
 
 

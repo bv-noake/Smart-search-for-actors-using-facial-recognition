@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
                         URLEncoder.encode("Password", "UTF-8") + "=" +
                         URLEncoder.encode(Password, "UTF-8");
 
-                URL url = new URL("http://10.167.122.103/App/username.php?" + data);
+                URL url = new URL("http://192.168.43.35:80/App/username.php?" + data);
                 URLConnection con = url.openConnection();
                 con.setDoOutput(true);
 
