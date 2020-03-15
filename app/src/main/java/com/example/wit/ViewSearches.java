@@ -73,7 +73,8 @@ public class ViewSearches extends AppCompatActivity {
                         URLEncoder.encode(Email, "UTF-8");
 
 
-                URL url = new URL("http://192.168.43.35:80/App/searches.php?" + data);
+                //URL url = new URL("http://192.168.43.35:80/App/searches.php?" + data);
+                URL url = new URL("http://10.84.181.115/App/searches.php?" + data);
                 URLConnection con = url.openConnection();
                 con.setDoOutput(true);
 

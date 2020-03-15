@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="true">10.167.122.103</domain> <!-- Debug port -->
+        <domain includeSubdomains="true">10.84.181.115</domain> <!-- Debug port -->
         <domain includeSubdomains="true">192.168.43.35</domain>
+        <domain includeSubdomains="true">10.167.120.26</domain>
+        <domain includeSubdomains="true">192.168.0.40</domain>
+
+
 
 
 

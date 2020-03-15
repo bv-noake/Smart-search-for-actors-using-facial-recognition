@@ -1,14 +1,18 @@
 package com.example.wit;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.FileProvider;
 
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
+
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.view.MotionEvent;
@@ -22,12 +26,15 @@ import com.chaquo.python.android.AndroidPlatform;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.io.File;
 import android.net.Uri;
@@ -37,7 +44,7 @@ import android.widget.Toolbar;
 public class MainActivity extends AppCompatActivity {
     private static final int REQUEST_IMAGE_CAPTURE = 101;
     private ImageView Imageres;
-
+    private ProgressDialog progressdialog;
 
 
     private SharedPreferenceConfig sharedPreferenceConfig;
@@ -54,6 +61,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         //Imageres = findViewById(R.id.imageView);
+
+        progressdialog = new ProgressDialog(this);
+        progressdialog.setMessage("Searching...");
+        progressdialog.setTitle("We will now look for your celebrity");
 
 
         getSupportActionBar().hide();
@@ -72,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     public void takepicture(View view) {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
@@ -81,11 +93,27 @@ public class MainActivity extends AppCompatActivity {
             File imageFile = null;
             try {
                 imageFile = getImageFile();
+
+
+
+
+
+                Intent intent = new Intent(MainActivity.this, Celeb.class);
+                intent.putExtra("Image", imageFile);
+                startActivityForResult(intent, 1);
+
+
+                //celebname();
+
+
+
             }
             catch (IOException e)
             {
                 e.printStackTrace();
             }
+
+
 
             if (imageFile!=null)
             {
@@ -93,10 +121,13 @@ public class MainActivity extends AppCompatActivity {
                 cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
                 startActivityForResult(cameraIntent, IMAGE_REQUEST);
                 Context context = getApplicationContext();
-                Python.start(new AndroidPlatform(context));
+                //Python.start(new AndroidPlatform(context));
 
-                Python py = Python.getInstance();
-                PyObject pyObject = py.getModule("facerecognition").callAttr("main", ""+imageFile);
+
+
+                //Python py = Python.getInstance();
+                //PyObject pyObject = py.getModule("facerecognition").callAttr("main", ""+encode);
+                //celebname();
             }
 
 
@@ -104,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+
 
 
 
@@ -117,8 +150,15 @@ public class MainActivity extends AppCompatActivity {
 
         File imageFile = File.createTempFile(imageName, ".jpg", storage);
         currentImagePath = imageFile.getAbsolutePath();
+
+
         return imageFile;
+
     }
+
+
+
+
 
 
 
@@ -154,6 +194,8 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
+
     public class username extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
@@ -172,15 +214,14 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             String Email = params[0];
-            String Password = params[1];
+
 
             try {
                 String data = URLEncoder.encode("Email", "UTF-8") + "=" +
-                        URLEncoder.encode(Email, "UTF-8") + "&" +
-                        URLEncoder.encode("Password", "UTF-8") + "=" +
-                        URLEncoder.encode(Password, "UTF-8");
+                        URLEncoder.encode(Email, "UTF-8");
 
-                URL url = new URL("http://192.168.43.35:80/App/username.php?" + data);
+                //URL url = new URL("http://192.168.43.35:80/App/username.php?" + data);
+                URL url = new URL("http://10.167.120.26/App/username.php?" + data);
                 URLConnection con = url.openConnection();
                 con.setDoOutput(true);
 
@@ -210,5 +251,13 @@ public class MainActivity extends AppCompatActivity {
 
                 return null;
         }
+    }
+
+    public void celebname() {
+
+        Intent intent = new Intent(this, Celeb.class);
+
+        startActivity(intent);
+
     }
 }
