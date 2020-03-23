@@ -13,9 +13,6 @@ def main(encode):
 
 
 
-
-
-
     conn = mysql.connector.connect(
         host="10.167.120.26",
         port = "3308",
